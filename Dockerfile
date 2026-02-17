@@ -1,4 +1,4 @@
-﻿﻿# Build PHP dependencies
+﻿# Build PHP dependencies
 FROM composer:2 AS composer
 WORKDIR /app
 COPY composer.json composer.lock ./
