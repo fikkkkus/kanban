@@ -4,7 +4,9 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader --no-scripts
 COPY . .
-RUN composer dump-autoload --optimize \
+RUN mkdir -p bootstrap/cache storage \
+    && chmod -R 775 bootstrap/cache storage \
+    && composer dump-autoload --optimize \
     && php artisan package:discover --ansi
 
 # Build frontend assets
