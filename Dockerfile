@@ -12,9 +12,19 @@ RUN mkdir -p bootstrap/cache storage \
 # Build frontend assets
 FROM node:20-alpine AS node
 WORKDIR /app
+RUN apk add --no-cache \
+    php82 \
+    php82-cli \
+    php82-mbstring \
+    php82-openssl \
+    php82-pdo \
+    php82-sqlite3 \
+    php82-tokenizer \
+    php82-xml
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
+COPY --from=composer /app/vendor /app/vendor
 RUN npm run build
 
 # Runtime image
