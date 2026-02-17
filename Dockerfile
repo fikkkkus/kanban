@@ -1,4 +1,4 @@
-﻿# Build PHP dependencies
+﻿﻿# Build PHP dependencies
 FROM composer:2 AS composer
 WORKDIR /app
 COPY composer.json composer.lock ./
@@ -13,18 +13,24 @@ RUN mkdir -p bootstrap/cache storage \
 FROM node:20-alpine AS node
 WORKDIR /app
 RUN apk add --no-cache \
-    php \
-    php-cli \
-    php-mbstring \
-    php-openssl \
-    php-pdo \
-    php-sqlite3 \
-    php-tokenizer \
-    php-xml
+    php82 \
+    php82-cli \
+    php82-mbstring \
+    php82-openssl \
+    php82-pdo \
+    php82-sqlite3 \
+    php82-tokenizer \
+    php82-xml
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 COPY --from=composer /app/vendor /app/vendor
+RUN mkdir -p storage bootstrap/cache \
+    && touch storage/database.sqlite \
+    && chmod -R 775 storage bootstrap/cache \
+    && cp .env.example .env \
+    && php -r "file_put_contents('.env', preg_replace('/^APP_KEY=.*/m', 'APP_KEY=base64:'.base64_encode(random_bytes(32)), file_get_contents('.env')));" \
+    && printf \"\\nDB_CONNECTION=sqlite\\nDB_DATABASE=/app/storage/database.sqlite\\n\" >> .env
 RUN npm run build
 
 # Runtime image
