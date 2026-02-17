@@ -36,7 +36,7 @@ ENV WAYFINDER_DISABLE=1
 RUN npm run build
 
 # Runtime image
-FROM php:8.2-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # System deps
 RUN apk add --no-cache \
