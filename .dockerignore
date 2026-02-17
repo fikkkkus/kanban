@@ -7,5 +7,6 @@ storage
 bootstrap/cache
 .env
 .env.*
+!.env.example
 Dockerfile
 docker-compose.yml

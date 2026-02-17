@@ -28,7 +28,7 @@ COPY --from=composer /app/vendor /app/vendor
 RUN mkdir -p storage bootstrap/cache \
     && touch storage/database.sqlite \
     && chmod -R 775 storage bootstrap/cache \
-    && cp .env.example .env \
+    && if [ -f .env.example ]; then cp .env.example .env; else touch .env; fi \
     && php -r "file_put_contents('.env', preg_replace('/^APP_KEY=.*/m', 'APP_KEY=base64:'.base64_encode(random_bytes(32)), file_get_contents('.env')));" \
     && printf \"\\nDB_CONNECTION=sqlite\\nDB_DATABASE=/app/storage/database.sqlite\\n\" >> .env
 RUN npm run build
