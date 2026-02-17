@@ -12,6 +12,10 @@ RUN mkdir -p bootstrap/cache storage \
 # Build frontend assets
 FROM node:20-alpine AS node
 WORKDIR /app
+ARG VITE_REVERB_APP_KEY
+ARG VITE_REVERB_HOST
+ARG VITE_REVERB_PORT
+ARG VITE_REVERB_SCHEME
 RUN apk add --no-cache \
     php \
     php-cli \
@@ -32,6 +36,8 @@ RUN mkdir -p storage/framework/{views,cache,sessions} bootstrap/cache \
     && APP_KEY=$(php -r "echo 'base64:'.base64_encode(random_bytes(32));") \
     && printf "APP_NAME=Kanban\nAPP_ENV=production\nAPP_DEBUG=false\nAPP_URL=http://localhost\nAPP_KEY=%s\nDB_CONNECTION=sqlite\nDB_DATABASE=/app/storage/database.sqlite\n" "$APP_KEY" > .env \
     && php artisan wayfinder:generate --with-form
+RUN printf "VITE_REVERB_APP_KEY=%s\nVITE_REVERB_HOST=%s\nVITE_REVERB_PORT=%s\nVITE_REVERB_SCHEME=%s\n" \
+    "${VITE_REVERB_APP_KEY}" "${VITE_REVERB_HOST}" "${VITE_REVERB_PORT}" "${VITE_REVERB_SCHEME}" > .env.production
 ENV WAYFINDER_DISABLE=1
 RUN npm run build
 
