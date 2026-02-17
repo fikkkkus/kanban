@@ -2,9 +2,10 @@
 FROM composer:2 AS composer
 WORKDIR /app
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
+RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader --no-scripts
 COPY . .
-RUN composer dump-autoload --optimize
+RUN composer dump-autoload --optimize \
+    && php artisan package:discover --ansi
 
 # Build frontend assets
 FROM node:20-alpine AS node
