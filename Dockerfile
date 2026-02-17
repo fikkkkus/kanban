@@ -13,14 +13,14 @@ RUN mkdir -p bootstrap/cache storage \
 FROM node:20-alpine AS node
 WORKDIR /app
 RUN apk add --no-cache \
-    php82 \
-    php82-cli \
-    php82-mbstring \
-    php82-openssl \
-    php82-pdo \
-    php82-sqlite3 \
-    php82-tokenizer \
-    php82-xml
+    php \
+    php-cli \
+    php-mbstring \
+    php-openssl \
+    php-pdo \
+    php-sqlite3 \
+    php-tokenizer \
+    php-xml
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
