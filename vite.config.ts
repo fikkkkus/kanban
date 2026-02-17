@@ -4,6 +4,8 @@ import vue from '@vitejs/plugin-vue';
 import laravel from 'laravel-vite-plugin';
 import { defineConfig } from 'vite';
 
+const enableWayfinder = process.env.WAYFINDER_DISABLE !== '1';
+
 export default defineConfig({
     plugins: [
         laravel({
@@ -12,9 +14,13 @@ export default defineConfig({
             refresh: true,
         }),
         tailwindcss(),
-        wayfinder({
-            formVariants: true,
-        }),
+        ...(enableWayfinder
+            ? [
+                  wayfinder({
+                      formVariants: true,
+                  }),
+              ]
+            : []),
         vue({
             template: {
                 transformAssetUrls: {

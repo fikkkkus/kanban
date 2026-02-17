@@ -30,6 +30,7 @@ RUN mkdir -p storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache \
     && APP_KEY=$(php -r "echo 'base64:'.base64_encode(random_bytes(32));") \
     && printf "APP_NAME=Kanban\nAPP_ENV=production\nAPP_DEBUG=false\nAPP_URL=http://localhost\nAPP_KEY=%s\nDB_CONNECTION=sqlite\nDB_DATABASE=/app/storage/database.sqlite\n" "$APP_KEY" > .env
+ENV WAYFINDER_DISABLE=1
 RUN npm run build
 
 # Runtime image
