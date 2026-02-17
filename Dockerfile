@@ -19,6 +19,7 @@ RUN apk add --no-cache \
     php-openssl \
     php-pdo \
     php-sqlite3 \
+    php-session \
     php-tokenizer \
     php-xml
 COPY package.json package-lock.json ./
