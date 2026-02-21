@@ -4,7 +4,6 @@ import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import '../css/app.css';
 import './lib/echo';
-import { initializeTheme } from './composables/useAppearance';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -24,5 +23,3 @@ createInertiaApp({
         color: '#4B5563',
     },
 });
-
-initializeTheme();

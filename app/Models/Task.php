@@ -16,6 +16,7 @@ class Task extends Model
     public const STATUS_IN_PROGRESS = 'IN_PROGRESS';
     public const STATUS_DONE = 'DONE';
 
+    //TODO USER_ID убрать
     protected $fillable = [
         'user_id',
         'workspace_id',
