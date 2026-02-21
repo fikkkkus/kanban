@@ -575,13 +575,13 @@ watch(activeWorkspaceId, (workspaceId) => {
 <template>
     <Head :title="pageTitle" />
 
-    <main class="relative min-h-screen overflow-visible bg-gradient-to-br from-indigo-950 via-violet-900 to-fuchsia-900 px-4 pt-0 pb-0 text-slate-900 md:px-6 md:pt-0 md:pb-0">
+    <main class="relative h-screen overflow-hidden bg-gradient-to-br from-indigo-950 via-violet-900 to-fuchsia-900 px-4 pt-0 pb-0 text-slate-900 md:px-6 md:pt-0 md:pb-0">
         <div class="pointer-events-none absolute inset-0 opacity-70">
             <div class="wave wave-1" />
             <div class="wave wave-2" />
             <div class="wave wave-3" />
         </div>
-        <section class="relative mx-auto flex min-h-screen max-w-[1600px] flex-col gap-4">
+        <section class="relative mx-auto flex h-full max-w-[1600px] flex-col gap-4">
             <header class="relative -mx-4 border-y border-white/25 bg-white/15 px-3 py-3 text-white shadow-[0_18px_45px_rgba(0,0,0,0.15)] backdrop-blur-xl md:-mx-6 md:px-4 md:py-4">
                 <div class="flex flex-wrap items-center gap-3 md:grid md:grid-cols-[auto_minmax(520px,760px)_auto] md:items-center md:gap-4">
                     <div class="flex items-center gap-3">
