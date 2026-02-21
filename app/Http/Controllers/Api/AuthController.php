@@ -20,12 +20,14 @@ class AuthController extends Controller
         do {
             $joinCode = strtoupper(Str::random(10));
         } while (Workspace::query()->where('join_code', $joinCode)->exists());
-        $workspace = Workspace::query()->create([
+        $workspace = new Workspace();
+        $workspace->forceFill([
             'owner_id' => $user->id,
             'name' => 'Workspace',
             'color' => '#7c3aed',
             'join_code' => $joinCode,
         ]);
+        $workspace->saveOrFail();
         $workspace->members()->syncWithoutDetaching([$user->id => ['role' => 'owner']]);
         $user->forceFill(['current_workspace_id' => $workspace->id])->save();
 

@@ -45,12 +45,14 @@ class WorkspaceController extends Controller
 
     public function store(StoreWorkspaceRequest $request): JsonResponse
     {
-        $workspace = Workspace::query()->create([
+        $workspace = new Workspace();
+        $workspace->forceFill([
             'owner_id' => $request->user()->id,
             'name' => $request->validated('name'),
             'color' => $request->validated('color'),
             'join_code' => $this->generateJoinCode(),
         ]);
+        $workspace->saveOrFail();
         $workspace->members()->syncWithoutDetaching([$request->user()->id => ['role' => 'owner']]);
 
         return response()->json([

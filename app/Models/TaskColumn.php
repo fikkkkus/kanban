@@ -13,11 +13,8 @@ class TaskColumn extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'workspace_id',
         'name',
         'color',
-        'position',
     ];
 
     public function user(): BelongsTo

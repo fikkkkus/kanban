@@ -11,8 +11,6 @@ class TaskComment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'task_id',
-        'user_id',
         'body',
     ];
 
@@ -26,4 +24,3 @@ class TaskComment extends Model
         return $this->belongsTo(User::class);
     }
 }
-

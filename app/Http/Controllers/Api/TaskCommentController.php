@@ -31,10 +31,13 @@ class TaskCommentController extends Controller
     {
         $this->authorize('view', $task);
 
-        $comment = $task->comments()->create([
+        $comment = new TaskComment();
+        $comment->forceFill([
             'user_id' => $request->user()->id,
             'body' => $request->validated('body'),
         ]);
+        $comment->task()->associate($task);
+        $comment->saveOrFail();
 
         $comment->load('user:id,name,role');
         WorkspaceBoardUpdated::dispatch((int) $task->workspace_id, $request->user()->id, 'comment.created');

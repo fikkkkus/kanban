@@ -13,10 +13,8 @@ class Workspace extends Model
     use HasFactory;
 
     protected $fillable = [
-        'owner_id',
         'name',
         'color',
-        'join_code',
     ];
 
     public function owner(): BelongsTo

@@ -48,13 +48,17 @@ class EloquentTaskRepository implements TaskRepository
         return DB::transaction(function () use ($owner, $workspaceId, $data): TaskColumn {
             $position = $this->nextColumnPosition($workspaceId);
 
-            return TaskColumn::create([
+            $column = new TaskColumn();
+            $column->forceFill([
                 'user_id' => $owner->id,
                 'workspace_id' => $workspaceId,
                 'name' => $data['name'],
                 'color' => $data['color'],
                 'position' => $position,
             ]);
+            $column->saveOrFail();
+
+            return $column;
         });
     }
 
@@ -80,7 +84,7 @@ class EloquentTaskRepository implements TaskRepository
                 }
 
                 $column->position = $index;
-                $column->save();
+                $column->saveOrFail();
             }
         });
     }
@@ -95,7 +99,8 @@ class EloquentTaskRepository implements TaskRepository
         return DB::transaction(function () use ($owner, $workspaceId, $data, $columnId, $participantIds): Task {
             $position = $this->nextPosition($workspaceId, $columnId);
 
-            return Task::create([
+            $task = new Task();
+            $task->forceFill([
                 'user_id' => $owner->id,
                 'workspace_id' => $workspaceId,
                 'column_id' => $columnId,
@@ -106,6 +111,9 @@ class EloquentTaskRepository implements TaskRepository
                 'status' => Task::STATUS_TODO,
                 'position' => $position,
             ]);
+            $task->saveOrFail();
+
+            return $task;
         });
     }
 
@@ -118,9 +126,8 @@ class EloquentTaskRepository implements TaskRepository
             'participant_ids' => array_key_exists('participant_ids', $data)
                 ? $this->normalizeParticipantIds($data['participant_ids'] ?? [])
                 : ($task->participant_ids ?? []),
-            'column_id' => array_key_exists('column_id', $data) ? $data['column_id'] : $task->column_id,
         ]);
-        $task->save();
+        $task->saveOrFail();
 
         return $task->fresh();
     }
@@ -133,7 +140,7 @@ class EloquentTaskRepository implements TaskRepository
             $task->column_id = $columnId;
             $task->workspace_id = $workspaceId;
             $task->position = $this->nextPosition($workspaceId, $columnId);
-            $task->save();
+            $task->saveOrFail();
 
             if ($oldColumnId) {
                 $this->normalizePositions($workspaceId, $oldColumnId);
@@ -167,7 +174,7 @@ class EloquentTaskRepository implements TaskRepository
                 }
 
                 $task->position = $index;
-                $task->save();
+                $task->saveOrFail();
             }
         });
     }
@@ -209,7 +216,7 @@ class EloquentTaskRepository implements TaskRepository
             }
 
             $task->position = $index;
-            $task->save();
+            $task->saveOrFail();
         }
     }
 
@@ -274,13 +281,15 @@ class EloquentTaskRepository implements TaskRepository
         ];
 
         foreach ($defaults as $column) {
-            TaskColumn::query()->create([
+            $model = new TaskColumn();
+            $model->forceFill([
                 'user_id' => $userId,
                 'workspace_id' => $workspaceId,
                 'name' => $column['name'],
                 'color' => $column['color'],
                 'position' => $column['position'],
             ]);
+            $model->saveOrFail();
         }
     }
 

@@ -56,12 +56,14 @@ class ResolveWorkspace
             ->first();
 
         if (! $workspace) {
-            $workspace = Workspace::query()->create([
+            $workspace = new Workspace();
+            $workspace->forceFill([
                 'owner_id' => $user->id,
                 'name' => 'Workspace',
                 'color' => '#7c3aed',
                 'join_code' => $this->generateJoinCode(),
             ]);
+            $workspace->saveOrFail();
             $workspace->members()->syncWithoutDetaching([$user->id => ['role' => 'owner']]);
         }
 
