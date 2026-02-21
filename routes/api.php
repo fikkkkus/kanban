@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')->group(function () {
     Route::prefix('auth')->group(function () {
-        Route::post('/register', [AuthController::class, 'register']);
-        Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
+        Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
         Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     });
 
@@ -21,7 +21,7 @@ Route::middleware('web')->group(function () {
         Route::get('/users', [UserController::class, 'index']);
         Route::get('/workspaces', [WorkspaceController::class, 'index']);
         Route::post('/workspaces', [WorkspaceController::class, 'store']);
-        Route::post('/workspaces/join', [WorkspaceController::class, 'join']);
+        Route::post('/workspaces/join', [WorkspaceController::class, 'join'])->middleware('throttle:10,1');
         Route::patch('/workspaces/{workspace}', [WorkspaceController::class, 'update'])->whereNumber('workspace');
         Route::post('/workspaces/{workspace}/switch', [WorkspaceController::class, 'switch'])->whereNumber('workspace');
         Route::get('/workspaces/{workspace}/members', [WorkspaceController::class, 'members'])->whereNumber('workspace');

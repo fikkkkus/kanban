@@ -7,6 +7,14 @@ use Illuminate\Validation\Rule;
 
 class UpdateTaskRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $task = $this->route('task');
+        if ($task && isset($task->workspace_id)) {
+            $this->merge(['workspace_id' => $task->workspace_id]);
+        }
+    }
+
     public function authorize(): bool
     {
         return true;

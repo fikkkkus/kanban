@@ -46,6 +46,8 @@ class TaskCommentController extends Controller
 
     public function destroy(Request $request, Task $task, TaskComment $comment): JsonResponse
     {
+        $this->authorize('view', $task);
+
         if ($comment->task_id !== $task->id) {
             abort(404);
         }

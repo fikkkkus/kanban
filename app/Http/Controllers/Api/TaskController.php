@@ -202,10 +202,8 @@ class TaskController extends Controller
         ResolveWorkspace $resolveWorkspace
     ): JsonResponse {
         $this->authorize('update', $task);
-        $workspace = $resolveWorkspace(
-            $request->user(),
-            $request->filled('workspace_id') ? (int) $request->validated('workspace_id') : null
-        );
+        $workspaceId = (int) ($task->workspace_id ?? 0);
+        $workspace = $resolveWorkspace($request->user(), $workspaceId > 0 ? $workspaceId : null);
 
         $updatedTask = $moveTask($task, $workspace->id, (int) $request->validated('column_id'));
         WorkspaceBoardUpdated::dispatch($workspace->id, $request->user()->id, 'task.moved');
