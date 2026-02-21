@@ -9,6 +9,7 @@ RUN mkdir -p bootstrap/cache storage \
     && composer dump-autoload --optimize \
     && php artisan package:discover --ansi
 
+
 # Build frontend assets
 FROM node:20-alpine AS node
 WORKDIR /app
@@ -16,29 +17,11 @@ ARG VITE_REVERB_APP_KEY
 ARG VITE_REVERB_HOST
 ARG VITE_REVERB_PORT
 ARG VITE_REVERB_SCHEME
-RUN apk add --no-cache \
-    php \
-    php-cli \
-    php-mbstring \
-    php-openssl \
-    php-pdo \
-    php-sqlite3 \
-    php-session \
-    php-tokenizer \
-    php-xml
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-COPY --from=composer /app/vendor /app/vendor
-RUN mkdir -p storage/framework/{views,cache,sessions} bootstrap/cache \
-    && touch storage/database.sqlite \
-    && chmod -R 775 storage bootstrap/cache storage/framework \
-    && APP_KEY=$(php -r "echo 'base64:'.base64_encode(random_bytes(32));") \
-    && printf "APP_NAME=Kanban\nAPP_ENV=production\nAPP_DEBUG=false\nAPP_URL=http://localhost\nAPP_KEY=%s\nDB_CONNECTION=sqlite\nDB_DATABASE=/app/storage/database.sqlite\n" "$APP_KEY" > .env \
-    && php artisan wayfinder:generate --with-form
 RUN printf "VITE_REVERB_APP_KEY=%s\nVITE_REVERB_HOST=%s\nVITE_REVERB_PORT=%s\nVITE_REVERB_SCHEME=%s\n" \
     "${VITE_REVERB_APP_KEY}" "${VITE_REVERB_HOST}" "${VITE_REVERB_PORT}" "${VITE_REVERB_SCHEME}" > .env.production
-ENV WAYFINDER_DISABLE=1
 RUN npm run build
 
 # Runtime image
@@ -70,7 +53,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         pdo_sqlite \
         zip \
         gd \
-        sockets
+        sockets \
+        pcntl
 
 WORKDIR /var/www/html
 
