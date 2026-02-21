@@ -88,11 +88,28 @@ async function joinWorkspace(): Promise<void> {
 async function copyJoinCode(code: string | null): Promise<void> {
     if (!code) return;
     try {
-        await navigator.clipboard.writeText(code);
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(code);
+        } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            textarea.setAttribute('readonly', 'true');
+            textarea.style.position = 'fixed';
+            textarea.style.top = '-1000px';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            textarea.setSelectionRange(0, textarea.value.length);
+            const ok = document.execCommand('copy');
+            document.body.removeChild(textarea);
+            if (!ok) {
+                throw new Error('copy failed');
+            }
+        }
         info.value = 'Код приглашения скопирован.';
         error.value = '';
     } catch {
-        error.value = 'Не удалось скопировать код.';
+        error.value = 'Не удалось скопировать код. Попробуйте вручную.';
     }
 }
 
